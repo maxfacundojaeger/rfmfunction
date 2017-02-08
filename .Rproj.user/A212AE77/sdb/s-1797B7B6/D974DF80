@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#########################################################################################\n# Copyright (c) 2016. All rights reserved.  See the file LICENSE for\n# license terms.\n#########################################################################################\n# File: LE2_ScoringModel.R\n# Proj: R Workshop\n# Desc: R - Beyond the Basics,\n#       Lecture Part 2 (Project)\n# Auth: Andrea Bublitz and Claudia Wenzel\n# Date: 2017/02/06\n#########################################################################################\n\n#' RFMfunction\n\n#' Calculate a weighted RMF score, this is a Description\n#\n#Arguments\n#' @param data - a data table\n#' @param weight_recency - weight of recency\n#' @param weiht_frequency - weight of frequency\n#\n#\n#' @details mmmmmmmmmmm\n#' @return Returns a data.table containing ... xy ...\n#' score this is the second line. thank you for smoking.\n#' @export\n\n#Set working directory ####\n#setwd(\"~/Dropbox/R - Beyond the basics/Lectures/data\")\n#Make sure to set your working directory correctly!\n\n#Install (if necessary) and load the following packages. ####\n\n\n# 5. The RFM function ####\nRFMfunction <- function(data, weight_recency=1, weight_frequency=1, weight_monetary=1){\n\n   library(data.table)\n  library(lubridate)\n  library(Hmisc)\n\n  # Ensure that the weights add up to one\n  weight_recency2 <- weight_recency/sum(weight_recency, weight_frequency, weight_monetary)\n  weight_frequency2 <- weight_frequency/sum(weight_recency, weight_frequency, weight_monetary)\n  weight_monetary2 <- weight_monetary/sum(weight_recency, weight_frequency, weight_monetary)\n\n  # RFM measures\n  max.Date <- max(data$TransDate)\n  temp <- data[,list(\n    recency = as.numeric(max.Date - max(TransDate)),\n    frequency = .N,\n    monetary = sum(PurchAmount)/.N),\n    by=\"Customer\"\n    ]\n\n  # RFM scores\n  temp <- temp[,list(Customer,\n    recency = as.numeric(cut2(-recency, g=3)),\n    frequency = as.numeric(cut2(frequency, g=3)),\n    monetary = as.numeric(cut2(monetary, g=3)))]\n\n  # Overall RFM score\n  temp[,finalscore:=weight_recency2*recency+weight_frequency2*frequency+weight_monetary2*monetary]\n\n  # RFM group\n  temp[,group:=round(finalscore)]\n\n  # Return final table\n  return(temp)\n}\n",
+    "created" : 1486560479252.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3556004227",
+    "id" : "D974DF80",
+    "lastKnownWriteTime" : 1486563503,
+    "last_content_update" : 1486563503002,
+    "path" : "~/R-Bigdata-and-Analytics-Seminar/rollthatmfj/R/RFMfunction.R",
+    "project_path" : "R/RFMfunction.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
